@@ -91,6 +91,16 @@ class TestQlstats:
             p.fetch_ratings(['76561197993968023'], 'duel')
         assert '/elo_b/' in mock_get.call_args[0][0]
 
+    def test_rating_path_may_have_a_subpath(self):
+        p = QlstatsProvider(base_url='http://qlstats.example', extra={'rating_system': ' /elo/bn/ '})
+        with patch('providers.qlstats.requests.get', return_value=_resp(json_data={'players': []})) as mock_get:
+            p.fetch_ratings(['76561197993968023'], 'duel')
+        assert mock_get.call_args[0][0] == 'http://qlstats.example/elo/bn/76561197993968023'
+
+    def test_unsafe_rating_path_falls_back_to_elo(self):
+        for bad in ('../admin', 'elo?x=1', 'elo bn', '//evil.example'):
+            assert QlstatsProvider(extra={'rating_system': bad}).rating_system == 'elo'
+
 
 # ---- slipgate --------------------------------------------------------
 

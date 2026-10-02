@@ -12,8 +12,8 @@
         "description": "Applies to instances whose Ranks tab has not been saved yet. A saved Ranks tab decides for itself." },
       { "key": "qlstats_base_url", "type": "string", "label": "qlstats: Base URL", "placeholder": "http://qlstats.net",
         "description": "Blank defaults to http://qlstats.net." },
-      { "key": "qlstats_rating_system", "type": "select", "label": "qlstats: rating system", "default": "elo",
-        "options": [ { "value": "elo", "label": "elo" }, { "value": "elo_b", "label": "elo_b" } ] },
+      { "key": "qlstats_rating_system", "type": "string", "label": "qlstats: rating path", "default": "elo", "placeholder": "elo",
+        "description": "The API path ratings are fetched from. Use the same value as qlx_balanceApi on your servers, e.g. elo, elo_b or elo/bn, so Live Status matches !elo. Blank means elo." },
 
       { "key": "slipgate_enabled", "type": "bool", "label": "Slipgate: on by default",
         "description": "Applies to instances whose Ranks tab has not been saved yet. A saved Ranks tab decides for itself." },

@@ -13,12 +13,16 @@ plan got wrong from reading balance.py alone, both load-bearing here:
   gametype. Treating games<=0 as "no data" is the only way to avoid showing
   a fabricated 900 for players qlstats has simply never heard of.
 """
+import re
+
 import requests
 
 from .base import PROVIDER_TIMEOUT_SEC, RankProvider
 
 DEFAULT_BASE_URL = 'http://qlstats.net'
 DEFAULT_RATING_SYSTEM = 'elo'
+# Operator-typed API path, e.g. 'elo', 'elo_b', 'elo/bn' (mirrors qlx_balanceApi).
+_RATING_PATH_RE = re.compile(r'^[A-Za-z0-9_]+(/[A-Za-z0-9_]+)*$')
 RATED_GAMETYPES = {'duel', 'ffa', 'ca', 'tdm', 'ctf', 'ft', 'ad'}
 
 
@@ -27,8 +31,8 @@ class QlstatsProvider(RankProvider):
         super().__init__(base_url, api_key, extra)
         if not self.base_url:
             self.base_url = DEFAULT_BASE_URL
-        rating_system = (self.extra.get('rating_system') or '').strip()
-        self.rating_system = rating_system if rating_system in ('elo', 'elo_b') else DEFAULT_RATING_SYSTEM
+        rating_system = (self.extra.get('rating_system') or '').strip().strip('/')
+        self.rating_system = rating_system if _RATING_PATH_RE.match(rating_system) else DEFAULT_RATING_SYSTEM
 
     def map_game_type(self, qlsm_gametype):
         gt = (qlsm_gametype or '').strip().lower()
